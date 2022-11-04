@@ -7,3 +7,10 @@ jQuery('.nws-pdp-images').slick({
     autoplay: false,
     slidesToScroll: 1,
 }); 
+
+//cart varient js
+jQuery(".nws-variant-box").click(function(){
+  var id = jQuery(this).attr("data-id");
+  jQuery("#"+id+" .nws-variant-box").removeClass('nws-active');
+  jQuery(this).addClass('nws-active');
+});
