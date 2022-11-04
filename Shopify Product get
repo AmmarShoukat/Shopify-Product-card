@@ -1,0 +1,81 @@
+<div class="nws-product-data" >
+  <div class="container">
+    <div class="row" >
+      {% assign collection_data = section.settings.collection %}
+      {% for product in collections[collection_data].products %}
+        <div class="col-md-4" >
+          <div class="nws-pdp-card" >
+            <div class="nws-pdp-images" >
+               {% for image in product.images %}
+                 <a href="{{ image.src | product_img_url: 'master' }}"  data-fancybox="gallery" ><img src="{{ image.src | product_img_url: '500x' }}" /></a>
+               {% endfor %}
+            </div>
+            <div class="nws-pdp-content" >
+              <h3>{{ product.title }}</h3>
+              <form class="nws-atc-btn-frm" method="post" action="/cart/add" data-productid="{{ product.id }}" id="product_form_{{ product.id }}" accept-charset="UTF-8" enctype="multipart/form-data" novalidate="novalidate" data-product-form="">
+                <input type="hidden" name="form_type" value="product">
+                <input type="hidden" name="utf8" value="✓">
+               {% if product.has_only_default_variant %}
+                 <input name="id" type="hidden" value="{{ variant.id }}" >
+                {% else %}
+                  <div class="nws-variant-part" >
+                    <label>SELECT OPTION:</label>
+                    {% for variant in product.variants %}
+                       <div class="nws-variant-box {% if product.selected_or_first_available_variant.id == variant.id %}nws-active{% endif %}" data-id="product_form_{{ product.id }}" >
+                         <h4>{{ variant.title }}{% if variant.title == 'Original' %} {{ product.title }}{% endif %} - {{ variant.price | money }}{%- if variant.compare_at_price > variant.price -%}<span>{{ variant.compare_at_price | money }}</span>{% endif %}</h4>
+                         {% assign deluxe_upgrade = product.metafields.deluxe-upgrade.deluxe-upgrade-key %}
+                         {% if deluxe_upgrade != blank and variant.title == 'Deluxe Upgrade' %}
+                           <ul>
+                             {% for data in deluxe_upgrade %}
+                             <li>{{ data }}</li>
+                             {% endfor %}
+                           </ul>
+                         {% endif %}
+                         <input class="nws-radio-btn" name="id" type="radio" value="{{ variant.id }}" {% if product.selected_or_first_available_variant.id == variant.id %}checked="checked"{% endif %} />
+                       </div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+                
+                <div class="nws-pdp-frm" >
+                  <div class="quantity js-item-quantity item-quantity--{{ section.id }}">
+                    <div class="control">
+                      <a class="btn-number qtyminus quantity-minus" href="#"></a>
+                      <input type="text" data-step="1" name="quantity" data-min="1" value="1" id="qty-{{section.id}}" class="input-qty input-text qty" size="4" pattern="[0-9]*">
+                      <a class="btn-number qtyplus quantity-plus" href="#"></a>
+                    </div>
+                  </div> 
+                 <div class="nws-pdp-frm-btn" >
+                  {% if product.available %}
+                    <input type="submit" value="Add to cart" class="btn nws-submit-btn" />
+                  {% else %}
+                    <input type="button" value="Sold Out" class="btn nws-submit-btn" disabled="disabled" />
+                  {% endif %}
+                </div> 
+               </div>
+            </form> 
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Nws Product Section",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Select Collection"
+      }
+    ],
+  "presets": [
+    {
+      "name": "Nws Product Section",
+      "category": "Nws Product Section"
+    }
+  ]
+  }
+{% endschema %}
