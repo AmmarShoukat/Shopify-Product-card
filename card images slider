@@ -14,3 +14,36 @@ jQuery(".nws-variant-box").click(function(){
   jQuery("#"+id+" .nws-variant-box").removeClass('nws-active');
   jQuery(this).addClass('nws-active');
 });
+
+// add to cart setting
+<script>
+  $(".nws-atc-btn-frm").each( function () {
+    $(this).bind("submit",function(e){
+      e.preventDefault();
+      var formID = $(this).attr("id");
+      $.ajax({
+        type: 'post',
+        url: '/cart/add.js',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(resp) {
+          Shopify.KT_getCart(); 
+          KT.drawOpen();
+          //console.log(success);
+        },
+        error: function(error) {
+          //console.log(error)
+        }
+      });
+      return false;
+    });
+  });
+
+  $("[href^='#']").click(function() {
+        id=$(this).attr("href")
+        $('html, body').animate({
+            scrollTop: $(id).offset().top - 70
+        }, 2000);
+    });
+</script>
+    
